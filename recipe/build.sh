@@ -60,6 +60,8 @@ export PYTORCH_BUILD_NUMBER=0
 
 # select OpenBLAS for BLAS
 export BLAS=OpenBLAS
+export CMAKE_AR=${AR}
+export CMAKE_RANLIB=${RANLIB}
 export USE_FBGEMM=0
 # use system NCCL
 export USE_SYSTEM_NCCL=1
