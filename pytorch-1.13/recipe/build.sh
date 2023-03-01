@@ -60,10 +60,10 @@ export USE_SYSTEM_NCCL=1
 # don't use mlkdnn
 export USE_MKLDNN=0
 # don't use NNPACK/QNNPACK/XNNPACK etc.
-export USE_NNPACK=0
-export USE_QNNPACK=0
-export USE_XNNPACK=0
-export USE_PYTORCH_QNNPACK=0
+export USE_NNPACK=1
+export USE_QNNPACK=1
+export USE_XNNPACK=1
+export USE_PYTORCH_QNNPACK=1
 export TH_BINARY_BUILD=1
 export USE_LMDB=1
 export USE_LEVELDB=1

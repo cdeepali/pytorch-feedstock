@@ -1,0 +1,91 @@
+diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
+index 49b7fd5025b..dfcfb5d7437 100644
+--- a/cmake/Dependencies.cmake
++++ b/cmake/Dependencies.cmake
+@@ -346,7 +346,7 @@ if(USE_NNPACK OR USE_QNNPACK OR USE_PYTORCH_QNNPACK OR USE_XNNPACK)
+         "Turn this warning off by USE_{Q/X}NNPACK=OFF.")
+       set(DISABLE_NNPACK_AND_FAMILY ON)
+     endif()
+-    if(NOT IOS AND NOT (CMAKE_SYSTEM_PROCESSOR MATCHES "^(i686|AMD64|x86_64|armv[0-9].*|arm64|aarch64)$"))
++    if(NOT IOS AND NOT (CMAKE_SYSTEM_PROCESSOR MATCHES "^(i686|AMD64|x86_64|armv[0-9].*|arm64|aarch64|ppc64le)$"))
+       message(WARNING
+         "Target architecture \"${CMAKE_SYSTEM_PROCESSOR}\" is not supported in {Q/X}NNPACK. "
+         "Supported architectures are x86, x86-64, ARM, and ARM64. "
+diff --git a/third_party/cpuinfo/CMakeLists.txt b/third_party/cpuinfo/CMakeLists.txt
+index d7e1786..9122b12 100644
+--- a/third_party/cpuinfo/CMakeLists.txt
++++ b/third_party/cpuinfo/CMakeLists.txt
+@@ -65,7 +65,7 @@ IF(NOT CMAKE_SYSTEM_PROCESSOR)
+       "cpuinfo will compile, but cpuinfo_initialize() will always fail.")
+     SET(CPUINFO_SUPPORTED_PLATFORM FALSE)
+   ENDIF()
+-ELSEIF(NOT CPUINFO_TARGET_PROCESSOR MATCHES "^(i[3-6]86|AMD64|x86(_64)?|armv[5-8].*|aarch64|arm64|ARM64)$")
++ELSEIF(NOT CPUINFO_TARGET_PROCESSOR MATCHES "^(i[3-6]86|AMD64|x86(_64)?|armv[5-8].*|aarch64|arm64|ARM64|ppc64le)$")
+   MESSAGE(WARNING
+     "Target processor architecture \"${CPUINFO_TARGET_PROCESSOR}\" is not supported in cpuinfo. "
+     "cpuinfo will compile, but cpuinfo_initialize() will always fail.")
+diff --git a/third_party/QNNPACK/CMakeLists.txt b/third_party/QNNPACK/CMakeLists.txt
+index a5ddc49..24df625 100644
+--- a/third_party/QNNPACK/CMakeLists.txt
++++ b/third_party/QNNPACK/CMakeLists.txt
+@@ -37,7 +37,7 @@ IF(NOT CMAKE_SYSTEM_PROCESSOR)
+   ELSE()
+     MESSAGE(FATAL_ERROR "CMAKE_SYSTEM_PROCESSOR is not defined")
+   ENDIF()
+-ELSEIF(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(i[3-6]86|x86_64|armv[5-8].*|aarch64)$")
++ELSEIF(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(i[3-6]86|x86_64|armv[5-8].*|aarch64|ppc64le)$")
+   MESSAGE(FATAL_ERROR "Unrecognized CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
+ ENDIF()
+ 
+diff --git a/aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt b/aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt
+index 2c9ec7aa1e3..122581df489 100644
+--- a/aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt
++++ b/aten/src/ATen/native/quantized/cpu/qnnpack/CMakeLists.txt
+@@ -55,7 +55,7 @@ if(NOT CMAKE_SYSTEM_PROCESSOR)
+   else()
+     message(FATAL_ERROR "CMAKE_SYSTEM_PROCESSOR is not defined")
+   endif()
+-elseif(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(i[3-6]86|x86_64|armv[5-8].*|aarch64|arm64)$")
++elseif(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(i[3-6]86|x86_64|armv[5-8].*|aarch64|arm64|ppc64le)$")
+   message(FATAL_ERROR "Unrecognized CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
+ endif()
+ 
+diff --git a/cmake/External/nnpack.cmake b/cmake/External/nnpack.cmake
+index a41343cbb5f..193f09b4bdb 100644
+--- a/cmake/External/nnpack.cmake
++++ b/cmake/External/nnpack.cmake
+@@ -27,7 +27,7 @@ endif()
+ # (2) Anything but x86, x86-64, ARM, ARM64 - unsupported
+ ##############################################################################
+ if(CMAKE_SYSTEM_PROCESSOR)
+-  if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(i686|x86_64|armv5te|armv7-a|armv7l|arm64|aarch64)$")
++  if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(i686|x86_64|armv5te|armv7-a|armv7l|arm64|aarch64|ppc64le)$")
+     message(WARNING "NNPACK is not supported on ${CMAKE_SYSTEM_PROCESSOR} processors. "
+       "The only supported architectures are x86, x86-64, ARM, and ARM64. "
+       "Turn this warning off by USE_NNPACK=OFF.")
+diff --git a/third_party/XNNPACK/CMakeLists.txt b/third_party/XNNPACK/CMakeLists.txt
+index 2ca06ee14..2c3686a9f 100755
+--- a/third_party/XNNPACK/CMakeLists.txt
++++ b/third_party/XNNPACK/CMakeLists.txt
+@@ -84,7 +84,7 @@ IF(NOT CMAKE_SYSTEM_PROCESSOR)
+   ELSE()
+     MESSAGE(FATAL_ERROR "CMAKE_SYSTEM_PROCESSOR is not defined")
+   ENDIF()
+-ELSEIF(NOT XNNPACK_TARGET_PROCESSOR MATCHES "^(i[3-6]86|x86|x86_64|AMD64|armv[5-8].*|aarch64|arm64.*|riscv(32|64|128))$")
++ELSEIF(NOT XNNPACK_TARGET_PROCESSOR MATCHES "^(i[3-6]86|x86|x86_64|AMD64|armv[5-8].*|aarch64|ppc64le|arm64.*|riscv(32|64|128))$")
+   MESSAGE(FATAL_ERROR "Unrecognized XNNPACK_TARGET_PROCESSOR = ${XNNPACK_TARGET_PROCESSOR}")
+ ENDIF()
+ 
+diff --git a/third_party/NNPACK/CMakeLists.txt b/third_party/NNPACK/CMakeLists.txt
+index 5ecd2df..fdd251b 100644
+--- a/third_party/NNPACK/CMakeLists.txt
++++ b/third_party/NNPACK/CMakeLists.txt
+@@ -57,7 +57,7 @@ IF(NOT CMAKE_SYSTEM_PROCESSOR)
+   IF(NOT IOS)
+     MESSAGE(WARNING "CMAKE_SYSTEM_PROCESSOR is not defined, automatic configuration may choose suboptimal options")
+   ENDIF()
+-ELSEIF(NOT NNPACK_TARGET_PROCESSOR MATCHES "^(i686|x86_64|armv5te|armv7-a|armv7l|armv7|armv7s|aarch64|arm64|arm64e)$")
++ELSEIF(NOT NNPACK_TARGET_PROCESSOR MATCHES "^(i686|x86_64|armv5te|armv7-a|armv7l|armv7|armv7s|aarch64|arm64|arm64e|ppc64le)$")
+   MESSAGE(FATAL_ERROR "Unrecognized NNPACK_TARGET_PROCESSOR = ${NNPACK_TARGET_PROCESSOR}")
+ ENDIF()
+ 
